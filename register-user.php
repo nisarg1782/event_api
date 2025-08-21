@@ -10,16 +10,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-$host = "localhost";
-$user = "root";
-$pass = "";
-$dbname = "event"; // replace with your DB name
-
-$conn = mysqli_connect($host, $user, $pass, $dbname);
-if (!$conn) {
-    echo json_encode(["success" => false, "message" => "Database connection failed"]);
-    exit;
-}
+require_once __DIR__ . '/config/db.php';
+// Use centralized DB connection helper
+$conn = db_get_connection();
 
 $raw = file_get_contents("php://input");
 $data = json_decode($raw, true);
@@ -46,26 +39,24 @@ $city_id = intval($data['city_id']);
 $fee = intval($data['fee']);
 $payment_id = $data['payment_id'];
 
-$stmt = mysqli_prepare($conn, 
+$stmt = $conn->prepare(
     "INSERT INTO event_registration (name, email, phone, state_id, city_id, fee, payment_id)
      VALUES (?, ?, ?, ?, ?, ?, ?)"
 );
 
 if (!$stmt) {
-    echo json_encode(["success" => false, "message" => mysqli_error($conn)]);
+    echo json_encode(["success" => false, "message" => $conn->error]);
     exit;
 }
 
-mysqli_stmt_bind_param($stmt, "sssiiis", 
-    $name, $email, $contact, $state_id, $city_id, $fee, $payment_id
-);
+$stmt->bind_param("sssiiis", $name, $email, $contact, $state_id, $city_id, $fee, $payment_id);
 
-if (mysqli_stmt_execute($stmt)) {
+if ($stmt->execute()) {
     echo json_encode(["success" => true]);
 } else {
-    echo json_encode(["success" => false, "message" => mysqli_stmt_error($stmt)]);
+    echo json_encode(["success" => false, "message" => $stmt->error]);
 }
 
-mysqli_stmt_close($stmt);
-mysqli_close($conn);
+$stmt->close();
+$conn->close();
 ?>
