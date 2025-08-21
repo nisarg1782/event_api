@@ -3,17 +3,9 @@
 <?php
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json");
-$host = "localhost";
-$user = "root"; // change if needed
-$pass = "";     // change if needed
-$db   = "event";
+require_once __DIR__ . '/config/db.php';
 
-$conn = new mysqli($host, $user, $pass, $db);
-
-if ($conn->connect_error) {
-    echo json_encode(["success" => false, "message" => "Database connection failed"]);
-    exit;
-}
+$conn = db_get_connection();
 $country_id = 101;
 
 $stmt = $conn->prepare("SELECT id, name FROM states WHERE country_id = ? ORDER BY name");
@@ -27,4 +19,6 @@ while ($row = $result->fetch_assoc()) {
 }
 
 echo json_encode($data);
+if (isset($stmt)) { $stmt->close(); }
+$conn->close();
 ?>
