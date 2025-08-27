@@ -5,18 +5,9 @@ header("Content-Type: application/json");
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json");
 
-// Database connection
-$host = "localhost";
-$user = "root"; // change if needed
-$pass = "";     // change if needed
-$db   = "event";
+require_once __DIR__ . '/config/db.php';
 
-$conn = new mysqli($host, $user, $pass, $db);
-
-if ($conn->connect_error) {
-    echo json_encode(["success" => false, "message" => "Database connection failed"]);
-    exit;
-}
+$conn = db_get_connection();
 
 // Get JSON input
 $input = json_decode(file_get_contents('php://input'), true);
@@ -60,5 +51,6 @@ if ($conn->query($sql)) {
     echo json_encode(["success" => false, "message" => $conn->error]);
 }
 
+if (isset($result) && $result instanceof mysqli_result) { $result->free(); }
 $conn->close();
 ?>
