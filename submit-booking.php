@@ -6,7 +6,17 @@ header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json");
 
 // Database connection
-include 'db.php';
+$host = "localhost";
+$user = "root"; // change if needed
+$pass = "";     // change if needed
+$db   = "event";
+
+$conn = new mysqli($host, $user, $pass, $db);
+
+if ($conn->connect_error) {
+    echo json_encode(["success" => false, "message" => "Database connection failed"]);
+    exit;
+}
 
 // Get JSON input
 $input = json_decode(file_get_contents('php://input'), true);
