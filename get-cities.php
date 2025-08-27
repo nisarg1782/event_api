@@ -2,12 +2,7 @@
 <?php
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json");
-
-$host = "localhost";
-require_once __DIR__ . '/config/db.php';
-
-
-$conn = db_get_connection();
+include "db.php";
 $state_id = isset($_GET['state_id']) ? (int)$_GET['state_id'] : 0;
 
 $stmt = $conn->prepare("SELECT id, name FROM cities WHERE state_id = ? ORDER BY name");

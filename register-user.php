@@ -9,10 +9,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-$host = "localhost";
-require_once __DIR__ . '/config/db.php';
-// Use centralized DB connection helper
-$conn = db_get_connection();
 
 
 $raw = file_get_contents("php://input");
@@ -45,11 +41,17 @@ $stmt = mysqli_prepare(
 );
 
 if (!$stmt) {
+    echo json_encode(["success" => false, "message" => mysqli_error($conn)]);
     exit;
 }
 
+mysqli_stmt_bind_param($stmt, "sssii", $name, $email, $phone, $state_id, $city_id);
 
+if (mysqli_stmt_execute($stmt)) {
     echo json_encode(["success" => true]);
 } else {
+    echo json_encode(["success" => false, "message" => mysqli_stmt_error($stmt)]);
 }
 
+mysqli_stmt_close($stmt);
+mysqli_close($conn);

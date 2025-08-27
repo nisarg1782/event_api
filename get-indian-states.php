@@ -4,6 +4,7 @@
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json");
 
+include "db.php";
 $country_id = 101;
 
 $stmt = $conn->prepare("SELECT id, name FROM states WHERE country_id = ? ORDER BY name");
