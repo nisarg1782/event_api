@@ -2,19 +2,8 @@
 header('Content-Type: application/json');
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Content-Type");
-
-// Database connection
-$host = "localhost";
-$user = "root"; // change if needed
-$pass = "";     // change if needed
-$db   = "event";
-
-$conn = new mysqli($host, $user, $pass, $db);
-
-if ($conn->connect_error) {
-    echo json_encode(["success" => false, "message" => "Database connection failed"]);
-    exit;
-}
+require_once __DIR__ . '/config/db.php';
+$conn = db_get_connection();
 
 // Decode JSON input
 $input = json_decode(file_get_contents("php://input"), true);

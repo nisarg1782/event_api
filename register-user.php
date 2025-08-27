@@ -9,6 +9,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
+require_once __DIR__ . '/config/db.php';
+$conn = db_get_connection();
 
 
 $raw = file_get_contents("php://input");
@@ -54,4 +56,4 @@ if (mysqli_stmt_execute($stmt)) {
 }
 
 mysqli_stmt_close($stmt);
-mysqli_close($conn);
+$conn->close();

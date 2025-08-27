@@ -5,18 +5,9 @@ header("Content-Type: application/json");
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json");
 
-// Database connection
-$host = "localhost";
-$user = "root"; // change if needed
-$pass = "";     // change if needed
-$db   = "event";
-
-$conn = new mysqli($host, $user, $pass, $db);
-
-if ($conn->connect_error) {
-    echo json_encode(["success" => false, "message" => "Database connection failed"]);
-    exit;
-}
+// Database connection (centralized)
+require_once __DIR__ . '/config/db.php';
+$conn = db_get_connection();
 
 // Get JSON input
 $input = json_decode(file_get_contents('php://input'), true);
@@ -26,7 +17,7 @@ if (!$input) {
     exit;
 }
 
-// Prepare data safely
+// Prepare data safely (as earlier)
 $name = $conn->real_escape_string($input['name'] ?? '');
 $email = $conn->real_escape_string($input['email'] ?? '');
 $contact = $conn->real_escape_string($input['contact'] ?? '');
@@ -50,9 +41,9 @@ if ($result && $result->num_rows > 0) {
     exit;
 }
 
-// Insert into database
+// Insert into database (direct SQL as earlier)
 $sql = "INSERT INTO bookings (name, email, contact, state_id, city_id, description, sponsorship)
-        VALUES ('$name', '$email', '$contact', ".($state_id ?: 'NULL').", ".($city_id ?: 'NULL').", '$description', '$sponsorship')";
+    VALUES ('$name', '$email', '$contact', ".($state_id ?: 'NULL').", ".($city_id ?: 'NULL').", '$description', '$sponsorship')";
 
 if ($conn->query($sql)) {
     echo json_encode(["success" => true, "message" => "Booking submitted successfully"]);
