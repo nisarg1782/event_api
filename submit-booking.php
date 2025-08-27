@@ -5,9 +5,7 @@ header("Content-Type: application/json");
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json");
 
-require_once __DIR__ . '/config/db.php';
 
-$conn = db_get_connection();
 
 // Get JSON input
 $input = json_decode(file_get_contents('php://input'), true);
@@ -51,6 +49,5 @@ if ($conn->query($sql)) {
     echo json_encode(["success" => false, "message" => $conn->error]);
 }
 
-if (isset($result) && $result instanceof mysqli_result) { $result->free(); }
 $conn->close();
 ?>

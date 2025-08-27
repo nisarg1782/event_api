@@ -3,13 +3,9 @@ header('Content-Type: application/json');
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Content-Type");
 
-
 // Database connection
 $host = "localhost";
 
-require_once __DIR__ . '/config/db.php';
-
-$conn = db_get_connection();
 
 
 // Decode JSON input

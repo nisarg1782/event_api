@@ -21,6 +21,4 @@ while ($row = $result->fetch_assoc()) {
 }
 
 echo json_encode($data);
-if (isset($stmt)) { $stmt->close(); }
-$conn->close();
 ?>

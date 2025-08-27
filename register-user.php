@@ -38,28 +38,18 @@ $phone = $data['phone'];
 $state_id = intval($data['state_id']);
 $city_id = intval($data['city_id']);
 
-
-$stmt = $conn->prepare(
-    "INSERT INTO event_registration (name, email, phone, state_id, city_id, fee, payment_id)
-     VALUES (?, ?, ?, ?, ?, ?, ?)"
-
+$stmt = mysqli_prepare(
+    $conn,
+    "INSERT INTO event_registration (name, email, phone, state_id, city_id)
+     VALUES (?, ?, ?, ?, ?)"
 );
 
 if (!$stmt) {
-    echo json_encode(["success" => false, "message" => $conn->error]);
     exit;
 }
 
 
-$stmt->bind_param("sssiiis", $name, $email, $contact, $state_id, $city_id, $fee, $payment_id);
-
-
-if ($stmt->execute()) {
     echo json_encode(["success" => true]);
 } else {
-    echo json_encode(["success" => false, "message" => $stmt->error]);
 }
 
-$stmt->close();
-$conn->close();
-?>
